@@ -39,7 +39,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             _buildNavItem(
               index: 1,
               icon: Icons.pie_chart,
-              label: 'Stats',
+              label: 'Conv',
             ),
             _buildNavItem(
               index: 2,

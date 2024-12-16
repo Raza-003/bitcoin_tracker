@@ -1,3 +1,4 @@
+import 'package:bitcoin_tracker/converter/currency_converter.dart';
 import 'package:bitcoin_tracker/home/_components/bottom_navbar.dart';
 import 'package:bitcoin_tracker/home/_components/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +15,14 @@ class _HomeState extends State<Home> {
 
   final List<Widget> _pages = [
     HomeScreen(), // HomeScreen is now at index 1 (Stats Page)
-    Center(child: Text('Home Page', style: TextStyle(color: Colors.white))),
+    CurrencyConverter(),
     Center(child: Text('Swap Page', style: TextStyle(color: Colors.white))),
-    Center(child: Text('Wallet Page', style: TextStyle(color: Colors.white))),
-    Center(child: Text('Profile Page', style: TextStyle(color: Colors.white))),
+    Center(
+        child: Text('Coming Soon...',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold))),
   ];
 
   void _onTabSelected(int index) {
