@@ -59,62 +59,70 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Top Assets',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+      child: RefreshIndicator(
+        onRefresh:
+            getCoinMarket, // Call the getCoinMarket function when swiped down
+        color: Colors.green, // Set the refresh indicator color to green
+        backgroundColor:
+            Colors.black, // Set background color for the refresh indicator
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Top Assets',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  'Average Price',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    'Average Price',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: isRefreshing
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Colors.green),
-                    )
-                  : coinMarket == null || coinMarket!.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'No data available. Please try again later.',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
-                            textAlign: TextAlign.center,
+                ],
+              ),
+              Expanded(
+                child: isRefreshing
+                    ? const Center(
+                        child: CircularProgressIndicator(color: Colors.green),
+                      )
+                    : coinMarket == null || coinMarket!.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No data available. Please try again later.',
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.grey),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: coinMarket!.length,
+                            itemBuilder: (context, index) {
+                              final coin = coinMarket![index];
+                              return _buildAssetRow(
+                                coin.image, // Pass the image URL
+                                coin.symbol.toUpperCase(),
+                                coin.name,
+                                '\$${coin.currentPrice.toStringAsFixed(2)}',
+                                coin.priceChange24H,
+                              );
+                            },
                           ),
-                        )
-                      : ListView.builder(
-                          itemCount: coinMarket!.length,
-                          itemBuilder: (context, index) {
-                            final coin = coinMarket![index];
-                            return _buildAssetRow(
-                              coin.image, // Pass the image URL
-                              coin.symbol.toUpperCase(),
-                              coin.name,
-                              '\$${coin.currentPrice.toStringAsFixed(2)}',
-                              coin.priceChange24H,
-                            );
-                          },
-                        ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
