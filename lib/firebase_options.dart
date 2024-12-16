@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '185032335553',
     projectId: 'trade-b4c40',
     storageBucket: 'trade-b4c40.firebasestorage.app',
-    iosBundleId: 'com.example.bitcoinTracker',
+    iosBundleId: 'com.trade',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '185032335553',
     projectId: 'trade-b4c40',
     storageBucket: 'trade-b4c40.firebasestorage.app',
-    iosBundleId: 'com.example.bitcoinTracker',
+    iosBundleId: 'com.trade',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
