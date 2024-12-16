@@ -1,7 +1,60 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:bitcoin_tracker/components/model/coinModel.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class TopAssetsSection extends StatelessWidget {
+class TopAssetsSection extends StatefulWidget {
   const TopAssetsSection({super.key});
+
+  @override
+  State<TopAssetsSection> createState() => _TopAssetsSectionState();
+}
+
+class _TopAssetsSectionState extends State<TopAssetsSection> {
+  bool isRefreshing = true;
+  List<CoinModel>? coinMarket;
+
+  @override
+  void initState() {
+    super.initState();
+    getCoinMarket();
+  }
+
+  Future<void> getCoinMarket() async {
+    const url =
+        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true';
+
+    setState(() {
+      isRefreshing = true;
+    });
+
+    try {
+      final response = await http.get(Uri.parse(url), headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      });
+
+      setState(() {
+        isRefreshing = false;
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = json.decode(response.body);
+        setState(() {
+          coinMarket =
+              jsonResponse.map((data) => CoinModel.fromJson(data)).toList();
+        });
+      } else {
+        print("Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      setState(() {
+        isRefreshing = false;
+      });
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,25 +68,51 @@ class TopAssetsSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Top Assets',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Top Assets',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Average Price',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-
-            // Asset List
             Expanded(
-              child: ListView(
-                children: [
-                  _buildAssetRow('BTC', 'Bitcoin', '15,320.00 USD', '+15%'),
-                  _buildAssetRow(
-                      'DOGE', 'Dogecoin', '0.10478466 USD', '+5.33%'),
-                  _buildAssetRow('ETH', 'Ethereum', '2,674.43 USD', '-0.35%'),
-                ],
-              ),
+              child: isRefreshing
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.green),
+                    )
+                  : coinMarket == null || coinMarket!.isEmpty
+                      ? const Center(
+                          child: Text(
+                            'No data available. Please try again later.',
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: coinMarket!.length,
+                          itemBuilder: (context, index) {
+                            final coin = coinMarket![index];
+                            return _buildAssetRow(
+                              coin.image, // Pass the image URL
+                              coin.symbol.toUpperCase(),
+                              coin.name,
+                              '\$${coin.currentPrice.toStringAsFixed(2)}',
+                              coin.priceChange24H,
+                            );
+                          },
+                        ),
             ),
           ],
         ),
@@ -41,30 +120,62 @@ class TopAssetsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildAssetRow(
-      String symbol, String name, String price, String change) {
+  Widget _buildAssetRow(String imageUrl, String symbol, String name,
+      String price, double change) {
+    final isPositive = change >= 0;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CircleAvatar(
-            radius: 20,
-            child: Text(symbol),
-          ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(price, style: TextStyle(color: Colors.grey)),
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(imageUrl),
+                backgroundColor: Colors.transparent,
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    symbol,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          Spacer(),
-          Text(
-            change,
-            style: TextStyle(
-              color: change.startsWith('+') ? Colors.green : Colors.red,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                price,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '${change.toStringAsFixed(2)}%',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: isPositive ? Colors.green : Colors.red,
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -1,6 +1,6 @@
 import 'package:bitcoin_tracker/components/item1.dart';
 import 'package:bitcoin_tracker/components/item2.dart';
-import 'package:bitcoin_tracker/model/coinModel.dart';
+import 'package:bitcoin_tracker/components/model/coinModel.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 

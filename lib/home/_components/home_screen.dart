@@ -13,7 +13,9 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          SizedBox(height: 30,),
+          SizedBox(
+            height: 30,
+          ),
           HeaderSection(),
           ChartSection(),
           TopAssetsSection(),

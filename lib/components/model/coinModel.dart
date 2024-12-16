@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+// Converts JSON string to a List of CoinModel objects
 List<CoinModel> coinModelFromJson(String str) =>
     List<CoinModel>.from(json.decode(str).map((x) => CoinModel.fromJson(x)));
 
+// Converts List of CoinModel objects to a JSON string
 String coinModelToJson(List<CoinModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
@@ -65,6 +67,7 @@ class CoinModel {
   // DateTime lastUpdated;
   SparklineIn7D sparklineIn7D;
 
+  /// Factory to create a CoinModel from JSON
   factory CoinModel.fromJson(Map<String, dynamic> json) => CoinModel(
         id: json["id"],
         symbol: json["symbol"],
@@ -96,6 +99,7 @@ class CoinModel {
         sparklineIn7D: SparklineIn7D.fromJson(json["sparkline_in_7d"]),
       );
 
+  /// Converts a CoinModel instance to JSON
   Map<String, dynamic> toJson() => {
         "id": id,
         "symbol": symbol,
@@ -134,10 +138,12 @@ class SparklineIn7D {
 
   List<double> price;
 
+  /// Factory to create SparklineIn7D from JSON
   factory SparklineIn7D.fromJson(Map<String, dynamic> json) => SparklineIn7D(
         price: List<double>.from(json["price"].map((x) => x?.toDouble())),
       );
 
+  /// Converts SparklineIn7D instance to JSON
   Map<String, dynamic> toJson() => {
         "price": List<dynamic>.from(price.map((x) => x)),
       };
