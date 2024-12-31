@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bitcoin_tracker/auth/login_screen.dart';
 import 'package:bitcoin_tracker/components/model/coinModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -66,6 +67,70 @@ class _HeaderSectionState extends State<HeaderSection> {
     }
   }
 
+  void _showLogoutBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      backgroundColor: Colors.black,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Are you sure you want to log out?',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    onPressed: () async {
+                      await FirebaseAuth.instance
+                          .signOut(); // Sign out the user
+                      if (mounted) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ),
+                        ); // Navigate to login screen
+                      }
+                    },
+                    child: Text('Log Out'),
+                  ),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context); // Close the bottom sheet
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -89,10 +154,12 @@ class _HeaderSectionState extends State<HeaderSection> {
                 ),
               ),
               Spacer(),
-              const Icon(
-                Icons.notifications,
-                color: Colors.white,
-                size: 30,
+              IconButton(
+                onPressed: _showLogoutBottomSheet,
+                icon: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                ),
               ),
             ],
           ),
