@@ -157,7 +157,7 @@ class _HeaderSectionState extends State<HeaderSection> {
               IconButton(
                 onPressed: _showLogoutBottomSheet,
                 icon: Icon(
-                  Icons.settings,
+                  Icons.logout,
                   color: Colors.white,
                 ),
               ),

@@ -101,7 +101,7 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
                     : coinMarket == null || coinMarket!.isEmpty
                         ? const Center(
                             child: Text(
-                              'No data available. Please try again later.',
+                              'API has been hit many requests, Please try again later.',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.grey),
                               textAlign: TextAlign.center,

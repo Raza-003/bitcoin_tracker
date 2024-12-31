@@ -23,42 +23,46 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
   }
 
   Future<void> fetchCurrencies() async {
-    final url =
-        'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd';
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonResponse = json.decode(response.body);
-        setState(() {
-          currencyList =
-              jsonResponse.map((coin) => coin['id'] as String).toList();
-          isLoading = false;
-        });
-      } else {
-        print("Failed to load currencies");
-      }
-    } catch (e) {
-      print("Error fetching currencies: $e");
-    }
-  }
-
-  Future<void> convertCurrency() async {
-    final url =
-        'https://api.coingecko.com/api/v3/simple/price?ids=$selectedCurrency&vs_currencies=usd';
+    const url = 'https://api.coincap.io/v2/assets';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
-        final price = jsonResponse[selectedCurrency]['usd'] as double;
+        final List<dynamic> assets = jsonResponse['data'];
+        setState(() {
+          currencyList = assets.map((coin) => coin['id'] as String).toList();
+          isLoading = false;
+        });
+      } else {
+        showError("Failed to load currencies.");
+      }
+    } catch (e) {
+      showError("Error fetching currencies: $e");
+    }
+  }
+
+  Future<void> convertCurrency() async {
+    final url = 'https://api.coincap.io/v2/assets/$selectedCurrency';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final price = double.parse(jsonResponse['data']['priceUsd']);
         setState(() {
           convertedAmount = amount * price;
         });
       } else {
-        print("Failed to convert currency");
+        showError("Failed to convert currency.");
       }
     } catch (e) {
-      print("Error converting currency: $e");
+      showError("Error converting currency: $e");
     }
+  }
+
+  void showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -82,7 +86,7 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Amount:',
+                    'Crypto Amount:',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                   TextField(
@@ -138,7 +142,8 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
                     ),
                     child: const Text(
                       'Convert',
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 20),
