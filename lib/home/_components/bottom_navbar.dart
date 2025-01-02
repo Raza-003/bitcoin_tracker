@@ -48,8 +48,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
             _buildNavItem(
               index: 3,
-              icon: Icons.wallet,
-              label: 'Wallet',
+              icon: Icons.settings_outlined,
+              label: 'Setting',
             ),
             // _buildNavItem(
             //   index: 4,
@@ -78,7 +78,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           widget.onTabSelected(index); // Notify parent of tab selection
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 4,),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
@@ -94,7 +94,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               children: [
                 Icon(
                   icon,
-                  size: 18,
+                  size: 20,
                   color: isSelected ? Colors.black : Colors.white,
                 ),
                 if (isSelected && label.isNotEmpty)

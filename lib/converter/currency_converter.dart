@@ -70,6 +70,7 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'Currency Converter',
           style: TextStyle(color: Colors.white),

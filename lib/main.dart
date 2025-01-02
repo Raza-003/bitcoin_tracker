@@ -29,9 +29,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      // home: SplashScreen(),
       // home: RegisterScreen(),
-      // home: Home(),
+      home: Home(),
     );
   }
 }

@@ -108,7 +108,9 @@ class _HeaderSectionState extends State<HeaderSection> {
                         ); // Navigate to login screen
                       }
                     },
-                    child: Text('Log Out'),
+                    child: Text('Log Out',
+                       style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
