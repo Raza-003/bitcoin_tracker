@@ -1,6 +1,8 @@
 import 'package:bitcoin_tracker/swap/_components/payment_method.dart';
 import 'package:bitcoin_tracker/swap/_components/swap_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import provider
+import '../main.dart'; // Import ThemeNotifier
 
 class SwapPage extends StatefulWidget {
   @override
@@ -82,15 +84,20 @@ class _SwapPageState extends State<SwapPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Access the theme provider
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final isDarkMode = themeNotifier.isDarkMode;
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor:
+            isDarkMode ? Colors.black : Color.fromARGB(255, 0, 255, 166),
         elevation: 0,
         centerTitle: true,
         title: Text(
           'Swap',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         ),
       ),
       body: Padding(
@@ -108,6 +115,7 @@ class _SwapPageState extends State<SwapPage> {
                 controller: btcController,
                 amount:
                     '\$${(dogeAmount * 300 / btcToDogeRate).toStringAsFixed(2)}',
+                isDarkMode: isDarkMode, // Pass the dark mode state
               ),
               SizedBox(height: 10),
               GestureDetector(
@@ -130,6 +138,7 @@ class _SwapPageState extends State<SwapPage> {
                 isReadOnly: true,
                 amount:
                     '${dogeAmount.toStringAsFixed(2)} DOGE', // Display DOGE amount
+                isDarkMode: isDarkMode, // Pass the dark mode state
               ),
               SizedBox(height: 10),
               Padding(
@@ -150,19 +159,22 @@ class _SwapPageState extends State<SwapPage> {
               SizedBox(height: 26),
               PaymentMethodCard(
                 onPaymentMethodSelected: selectPaymentMethod,
+                isDarkMode: isDarkMode, // Pass the dark mode state
               ),
               SizedBox(height: 10),
               Text(
                 'Payment Method: $selectedPaymentMethod',
-                style: TextStyle(color: Colors.white),
+                style:
+                    TextStyle(color: isDarkMode ? Colors.white : Colors.black),
               ),
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
+                    backgroundColor:
+                        isDarkMode ? Colors.grey[800] : Colors.white,
+                    foregroundColor: isDarkMode ? Colors.white : Colors.black,
                     minimumSize: Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -172,10 +184,7 @@ class _SwapPageState extends State<SwapPage> {
                   child: Text('Confirm Payment'),
                 ),
               ),
-              // SizedBox(height: 10),
-              SizedBox(
-                height: 100,
-              )
+              SizedBox(height: 100),
             ],
           ),
         ),

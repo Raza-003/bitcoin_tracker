@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import provider
+import '../main.dart'; // Import ThemeNotifier
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -8,15 +10,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool isDarkMode = true; // Variable to track dark/light mode
   String profileName = 'John Doe'; // Placeholder for profile name
   String selectedPaymentMethod = 'Select Payment Method'; // Default text
-
-  void toggleTheme(bool value) {
-    setState(() {
-      isDarkMode = value;
-    });
-  }
 
   void logout() {
     // Handle logout (clear session, tokens, etc.)
@@ -46,6 +41,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Access the theme provider
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final isDarkMode = themeNotifier.isDarkMode;
+
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
@@ -97,14 +96,19 @@ class _SettingsPageState extends State<SettingsPage> {
                   showDialog(
                     context: context,
                     builder: (_) => AlertDialog(
+                      backgroundColor:
+                          isDarkMode ? Colors.grey[900] : Colors.white,
                       title: Text(
                         'About the App',
                         style: TextStyle(
                           color: isDarkMode ? Colors.white : Colors.black,
                         ),
                       ),
-                      content: const Text(
+                      content: Text(
                         'This is a Bitcoin Tracker app that allows you to track your cryptocurrencies.',
+                        style: TextStyle(
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
                       ),
                       actions: [
                         TextButton(
@@ -123,7 +127,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Row(
                   children: [
                     Icon(
-                      isDarkMode ? Icons.sunny : Icons.nightlight_round,
+                      isDarkMode ? Icons.nightlight_round : Icons.sunny,
                       color: isDarkMode ? Colors.white : Colors.black,
                     ),
                     SizedBox(width: 8),
@@ -136,7 +140,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 value: isDarkMode,
-                onChanged: toggleTheme,
+                onChanged: (value) {
+                  themeNotifier.toggleTheme(value); // Update global theme
+                },
                 activeColor: Color.fromARGB(255, 0, 255, 166),
                 inactiveTrackColor:
                     isDarkMode ? Colors.grey[600] : Colors.grey[300],

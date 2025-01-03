@@ -7,6 +7,8 @@ import 'package:bitcoin_tracker/components/io.dart';
 import 'package:bitcoin_tracker/home/home_screen_main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart'; // Import provider for state management
 import 'firebase_options.dart';
 
 void main() async {
@@ -14,24 +16,50 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  await Hive.initFlutter();
+  await Hive.openBox('settings');
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeNotifier(), // Initialize the theme provider
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Bitcoin Tracker',
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
-      // home: SplashScreen(),
-      // home: RegisterScreen(),
+      theme: themeNotifier.currentTheme, // Apply the current theme
       home: Home(),
     );
+  }
+}
+
+class ThemeNotifier extends ChangeNotifier {
+  final String key = 'isDarkMode';
+  late Box settingsBox;
+  bool _isDarkMode;
+
+  ThemeNotifier()
+      : _isDarkMode =
+            Hive.box('settings').get('isDarkMode', defaultValue: false);
+
+  bool get isDarkMode => _isDarkMode;
+
+  ThemeData get currentTheme => _isDarkMode
+      ? ThemeData.dark(useMaterial3: true)
+      : ThemeData.light(useMaterial3: true);
+
+  void toggleTheme(bool value) {
+    _isDarkMode = value;
+    Hive.box('settings').put(key, _isDarkMode); // Save preference to Hive
+    notifyListeners();
   }
 }

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class PaymentMethodCard extends StatelessWidget {
   final Function(String) onPaymentMethodSelected;
+  final bool isDarkMode; // New parameter to handle dark mode
 
-  PaymentMethodCard({required this.onPaymentMethodSelected});
+  PaymentMethodCard({
+    required this.onPaymentMethodSelected,
+    required this.isDarkMode,
+  });
 
   void _showPaymentMethodBottomSheet(BuildContext context) {
     final paymentMethods = [
@@ -15,8 +19,9 @@ class PaymentMethodCard extends StatelessWidget {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor:
-          Colors.black.withOpacity(0.7), // Darker background for bottom sheet
+      backgroundColor: isDarkMode
+          ? Colors.black.withOpacity(0.9)
+          : Colors.grey[100], // Dynamic background color
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -28,10 +33,15 @@ class PaymentMethodCard extends StatelessWidget {
             return ListTile(
               title: Text(
                 paymentMethods[index],
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  color: isDarkMode ? Colors.white : Colors.black87,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white70),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                color: isDarkMode ? Colors.white70 : Colors.grey[600],
+              ),
               onTap: () {
                 Navigator.pop(context); // Close the bottom sheet
                 onPaymentMethodSelected(paymentMethods[index]);
@@ -51,11 +61,15 @@ class PaymentMethodCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.transparent, // Minimal transparent background
+          color: isDarkMode
+              ? Colors.black54
+              : Colors.white, // Dynamic background color
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2), // Subtle shadow effect
+              color: isDarkMode
+                  ? Colors.black.withOpacity(0.3)
+                  : Colors.grey.withOpacity(0.3), // Subtle shadow effect
               blurRadius: 8,
               offset: Offset(0, 4),
             ),
@@ -63,19 +77,26 @@ class PaymentMethodCard extends StatelessWidget {
         ),
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: Colors.green
-                .withOpacity(0.2), // Slight green tint for the theme
-            child: Icon(Icons.payment, color: Colors.white),
+            backgroundColor: isDarkMode
+                ? Colors.green.withOpacity(0.2)
+                : Colors.green.withOpacity(0.1), // Slight tint for theme
+            child: Icon(
+              Icons.payment,
+              color: isDarkMode ? Colors.white : Colors.black87,
+            ),
           ),
           title: Text(
             'Select Payment Method',
             style: TextStyle(
-              color: Colors.white,
+              color: isDarkMode ? Colors.white : Colors.black87,
               fontWeight: FontWeight.w600,
-              fontSize: 16, // Slightly larger font for clarity
+              fontSize: 16,
             ),
           ),
-          trailing: Icon(Icons.arrow_forward_ios, color: Colors.white70),
+          trailing: Icon(
+            Icons.arrow_forward_ios,
+            color: isDarkMode ? Colors.white70 : Colors.grey[600],
+          ),
         ),
       ),
     );

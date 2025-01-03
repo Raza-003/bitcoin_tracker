@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:bitcoin_tracker/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class CurrencyConverter extends StatefulWidget {
   const CurrencyConverter({super.key});
@@ -61,58 +63,87 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
 
   void showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeNotifier>(context);
+    final isDarkMode = themeProvider.isDarkMode;
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'Currency Converter',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: isDarkMode ? Colors.white : Colors.black,
+           
+          ),
         ),
-        backgroundColor: Colors.black,
+        backgroundColor:
+            isDarkMode ? Colors.black : const Color.fromARGB(255, 0, 255, 166),
+        elevation: 0,
       ),
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(
-                  color: Color.fromARGB(255, 0, 255, 166)))
-          : Padding(
+                color: Color.fromARGB(255, 0, 255, 166),
+              ),
+            )
+          : SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Crypto Amount:',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
+                  const SizedBox(height: 10),
                   TextField(
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        setState(() {
-                          amount = double.tryParse(value) ?? 0.0;
-                        });
-                      },
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[800],
-                        hintText: 'Enter Amount',
-                        hintStyle: const TextStyle(color: Colors.grey),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                      )),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Select Cryptocurrency:',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      setState(() {
+                        amount = double.tryParse(value) ?? 0.0;
+                      });
+                    },
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor:
+                          isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                      hintText: 'Enter Amount',
+                      hintStyle: TextStyle(
+                        color: isDarkMode ? Colors.white54 : Colors.grey,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                   ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Select Cryptocurrency:',
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   DropdownButton<String>(
                     value: selectedCurrency,
                     onChanged: (value) {
@@ -125,32 +156,59 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
                         value: currency,
                         child: Text(
                           currency,
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
                         ),
                       );
                     }).toList(),
-                    dropdownColor: Colors.black,
-                    style: const TextStyle(color: Colors.white),
-                    iconEnabledColor: Colors.white,
+                    dropdownColor:
+                        isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    iconEnabledColor: isDarkMode ? Colors.white : Colors.black,
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: convertCurrency,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 0, 255, 166),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                    ),
-                    child: const Text(
-                      'Convert',
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: convertCurrency,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 0, 255, 166),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        'Convert',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Converted Amount: \$${convertedAmount.toStringAsFixed(2)}',
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    'Converted Amount:',
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    '\$${convertedAmount.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.greenAccent : Colors.green,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),

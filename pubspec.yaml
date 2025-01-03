@@ -42,6 +42,9 @@ dependencies:
   chart_sparkline: ^1.1.1
   http:
   fl_chart: ^0.69.2
+  hive:
+  hive_flutter:
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

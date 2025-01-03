@@ -9,6 +9,7 @@ class SwapCard extends StatelessWidget {
   final bool isReadOnly;
   final TextEditingController? controller;
   final Function(String)? onAmountChanged;
+  final bool isDarkMode; // New parameter to handle dark mode
 
   SwapCard({
     this.title,
@@ -19,23 +20,35 @@ class SwapCard extends StatelessWidget {
     this.isReadOnly = false,
     this.controller,
     this.onAmountChanged,
+    required this.isDarkMode, // Required parameter
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black54,
+        color: isDarkMode ? Colors.black54 : Colors.white,
         borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: isDarkMode ? Colors.black26 : Colors.grey[300]!,
+            blurRadius: 5,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Text(
-          //   title,
-          //   style: TextStyle(color: Colors.white70, fontSize: 16),
-          // ),
+          if (title != null)
+            Text(
+              title!,
+              style: TextStyle(
+                color: isDarkMode ? Colors.white70 : Colors.black87,
+                fontSize: 16,
+              ),
+            ),
           SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,13 +56,20 @@ class SwapCard extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: Colors.white24,
-                    child: Icon(icon, color: Colors.white),
+                    backgroundColor:
+                        isDarkMode ? Colors.white24 : Colors.grey[200],
+                    child: Icon(
+                      icon,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
                   ),
                   SizedBox(width: 8),
                   Text(
                     currency,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: isDarkMode ? Colors.white : Colors.black87,
+                      fontSize: 16,
+                    ),
                   ),
                 ],
               ),
@@ -57,7 +77,7 @@ class SwapCard extends StatelessWidget {
                 Text(
                   amount,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: isDarkMode ? Colors.white : Colors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -68,11 +88,14 @@ class SwapCard extends StatelessWidget {
                   child: TextField(
                     controller: controller,
                     onChanged: onAmountChanged,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black),
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: '0.00',
-                      hintStyle: TextStyle(color: Colors.white54),
+                      hintStyle: TextStyle(
+                        color: isDarkMode ? Colors.white54 : Colors.black45,
+                      ),
                       border: InputBorder.none,
                     ),
                   ),
@@ -82,7 +105,10 @@ class SwapCard extends StatelessWidget {
           SizedBox(height: 16),
           Text(
             'Balance: $balance',
-            style: TextStyle(color: Colors.white70, fontSize: 14),
+            style: TextStyle(
+              color: isDarkMode ? Colors.white70 : Colors.black54,
+              fontSize: 14,
+            ),
           ),
         ],
       ),
