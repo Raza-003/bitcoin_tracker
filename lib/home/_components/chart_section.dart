@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:bitcoin_tracker/components/model/coinModel.dart';
+import 'package:bitcoin_tracker/main.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ChartSection extends StatefulWidget {
   const ChartSection({super.key});
@@ -72,13 +74,28 @@ class _ChartSectionState extends State<ChartSection> {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final isDarkMode = themeNotifier.isDarkMode;
+
     return Container(
       height: 200,
       margin: const EdgeInsets.only(top: 10, right: 12, left: 12),
       padding: const EdgeInsets.all(0),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(12),
+        color: isDarkMode
+            ? Colors.grey[900]
+            : Colors.white, // Background adapts to dark/light mode
+        borderRadius: BorderRadius.circular(12), // Retains rounded corners
+        boxShadow: isDarkMode
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // Shadow for light mode
+                ),
+              ],
       ),
       child: isLoading
           ? const Center(

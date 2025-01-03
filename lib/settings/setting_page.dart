@@ -1,3 +1,4 @@
+import 'package:bitcoin_tracker/settings/info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
 import '../main.dart'; // Import ThemeNotifier
@@ -88,35 +89,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   Icons.info_outline,
                   color: isDarkMode ? Colors.white : Colors.black,
                 ),
-                title: Text('About the App',
+                title: Text('About the Company',
                     style: TextStyle(
                       color: isDarkMode ? Colors.white : Colors.black,
                     )),
                 onTap: () {
-                  showDialog(
+                  showModalBottomSheet<void>(
                     context: context,
-                    builder: (_) => AlertDialog(
-                      backgroundColor:
-                          isDarkMode ? Colors.grey[900] : Colors.white,
-                      title: Text(
-                        'About the App',
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
-                        ),
-                      ),
-                      content: Text(
-                        'This is a Bitcoin Tracker app that allows you to track your cryptocurrencies.',
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Close'),
-                        ),
-                      ],
-                    ),
+                    builder: (BuildContext context) {
+                      return Infopage();
+                    },
                   );
                 },
               ),

@@ -1,34 +1,39 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:bitcoin_tracker/auth/login_screen.dart';
 import 'package:bitcoin_tracker/components/model/coinModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class HeaderSection extends StatefulWidget {
-  const HeaderSection({super.key});
+  const HeaderSection({Key? key}) : super(key: key);
 
   @override
-  _HeaderSectionState createState() => _HeaderSectionState();
+  State<HeaderSection> createState() => _HeaderSectionState();
 }
 
 class _HeaderSectionState extends State<HeaderSection> {
-  String? _userName;
-  bool isRefreshing = true;
-  List<CoinModel>? coinMarket;
+  String? _userName; // User's name extracted from email
+  bool isRefreshing = true; // Indicates data fetching status
+  List<CoinModel>? coinMarket; // List to store market data
   double? btcPrice; // Store Bitcoin price
-  double? cap; // Store Bitcoin price
+  double? cap; // Store Bitcoin market cap change percentage
 
   @override
   void initState() {
     super.initState();
-    getCoinMarket();
-    // Fetch the logged-in user's name
-    _userName = FirebaseAuth.instance.currentUser?.displayName ?? 'User';
+    _initializeUserName();
+    _fetchCoinMarketData();
   }
 
-  Future<void> getCoinMarket() async {
+  /// Extracts the user's name from their email.
+  void _initializeUserName() {
+    final email = FirebaseAuth.instance.currentUser?.email;
+    _userName = email != null ? email.split('@').first : 'User';
+  }
+
+  /// Fetches Bitcoin market data from the API.
+  Future<void> _fetchCoinMarketData() async {
     const url =
         'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin&sparkline=true';
 
@@ -42,45 +47,43 @@ class _HeaderSectionState extends State<HeaderSection> {
         "Accept": "application/json",
       });
 
-      setState(() {
-        isRefreshing = false;
-      });
-
       if (response.statusCode == 200) {
         final List<dynamic> jsonResponse = json.decode(response.body);
-        setState(() {
-          coinMarket =
-              jsonResponse.map((data) => CoinModel.fromJson(data)).toList();
+        final List<CoinModel> fetchedData =
+            jsonResponse.map((data) => CoinModel.fromJson(data)).toList();
 
-          // Get the BTC price
-          btcPrice = coinMarket?[0].currentPrice;
-          cap = coinMarket?[0].marketCapChangePercentage24H;
+        setState(() {
+          coinMarket = fetchedData;
+          btcPrice = coinMarket?.first.currentPrice;
+          cap = coinMarket?.first.marketCapChangePercentage24H;
         });
       } else {
         print("Error: ${response.statusCode}");
       }
     } catch (e) {
+      print("Error: $e");
+    } finally {
       setState(() {
         isRefreshing = false;
       });
-      print("Error: $e");
     }
   }
 
+  /// Displays a bottom sheet for logout confirmation.
   void _showLogoutBottomSheet() {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       backgroundColor: Colors.black,
-      builder: (BuildContext context) {
+      builder: (context) {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 'Are you sure you want to log out?',
                 style: TextStyle(
                   color: Colors.white,
@@ -97,29 +100,29 @@ class _HeaderSectionState extends State<HeaderSection> {
                       backgroundColor: Colors.red,
                     ),
                     onPressed: () async {
-                      await FirebaseAuth.instance
-                          .signOut(); // Sign out the user
+                      await FirebaseAuth.instance.signOut();
                       if (mounted) {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
+                            builder: (context) => const LoginScreen(),
                           ),
-                        ); // Navigate to login screen
+                        );
                       }
                     },
-                    child: Text('Log Out',
-                       style: TextStyle(color: Colors.white),
+                    child: const Text(
+                      'Log Out',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.white),
+                      side: const BorderSide(color: Colors.white),
                     ),
                     onPressed: () {
-                      Navigator.pop(context); // Close the bottom sheet
+                      Navigator.pop(context);
                     },
-                    child: Text(
+                    child: const Text(
                       'Cancel',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -135,6 +138,9 @@ class _HeaderSectionState extends State<HeaderSection> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Theme.of(context);
+    final isDarkMode = themeProvider.brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
       child: Column(
@@ -142,25 +148,25 @@ class _HeaderSectionState extends State<HeaderSection> {
         children: [
           Row(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 25,
                 backgroundImage: AssetImage('images/usre.jpg'),
               ),
               const SizedBox(width: 10),
               Text(
                 'Hey, ${_userName ?? 'Demo User'}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               IconButton(
                 onPressed: _showLogoutBottomSheet,
                 icon: Icon(
                   Icons.logout,
-                  color: Colors.white,
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
             ],
@@ -175,11 +181,11 @@ class _HeaderSectionState extends State<HeaderSection> {
                   Text(
                     btcPrice != null
                         ? '\$${btcPrice!.toStringAsFixed(2)}'
-                        : '...', // Display BTC price
-                    style: const TextStyle(
+                        : '...',
+                    style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                   const Text(
@@ -194,12 +200,14 @@ class _HeaderSectionState extends State<HeaderSection> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: const Color.fromARGB(255, 0, 255, 166),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  cap != null ? '\$${cap}' : '...',
-                  style: TextStyle(color: Colors.white),
+                  cap != null ? '${cap!.toString()}%' : '...',
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ],

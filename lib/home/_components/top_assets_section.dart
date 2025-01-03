@@ -58,18 +58,23 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Expanded(
       child: RefreshIndicator(
         onRefresh:
             getCoinMarket, // Call the getCoinMarket function when swiped down
         color: Colors.green, // Set the refresh indicator color to green
-        backgroundColor:
-            Colors.black, // Set background color for the refresh indicator
+        backgroundColor: isDarkMode
+            ? Colors.grey[800]
+            : Colors.white, // Background adapts to theme
         child: Container(
           padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          decoration: BoxDecoration(
+            color: isDarkMode
+                ? Colors.grey[900]
+                : Colors.white, // Background adapts to dark/light mode
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,6 +87,7 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                   Text(
@@ -89,6 +95,7 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                 ],
@@ -117,6 +124,7 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
                                 coin.name,
                                 '\$${coin.currentPrice.toStringAsFixed(2)}',
                                 coin.priceChange24H,
+                                isDarkMode,
                               );
                             },
                           ),
@@ -128,8 +136,14 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
     );
   }
 
-  Widget _buildAssetRow(String imageUrl, String symbol, String name,
-      String price, double change) {
+  Widget _buildAssetRow(
+    String imageUrl,
+    String symbol,
+    String name,
+    String price,
+    double change,
+    bool isDarkMode,
+  ) {
     final isPositive = change >= 0;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -149,16 +163,17 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
                 children: [
                   Text(
                     symbol,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: isDarkMode ? Colors.white : Colors.black,
                     ),
                   ),
                   Text(
                     name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: isDarkMode ? Colors.grey[400] : Colors.grey,
                     ),
                   ),
                 ],
@@ -170,9 +185,10 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
             children: [
               Text(
                 price,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
               Text(
@@ -180,7 +196,11 @@ class _TopAssetsSectionState extends State<TopAssetsSection> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: isPositive ? Colors.green : Colors.red,
+                  color: isPositive
+                      ? Colors.green
+                      : isDarkMode
+                          ? Colors.red[300]
+                          : Colors.red,
                 ),
               ),
             ],
