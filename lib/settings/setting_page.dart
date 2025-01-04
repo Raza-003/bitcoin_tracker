@@ -1,7 +1,10 @@
+import 'package:bitcoin_tracker/auth/login_screen.dart';
+import 'package:bitcoin_tracker/main.dart';
 import 'package:bitcoin_tracker/settings/info.dart';
+import 'package:bitcoin_tracker/settings/profile_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Import provider
-import '../main.dart'; // Import ThemeNotifier
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -11,46 +14,42 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String profileName = 'John Doe'; // Placeholder for profile name
-  String selectedPaymentMethod = 'Select Payment Method'; // Default text
-
-  void logout() {
-    // Handle logout (clear session, tokens, etc.)
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Logged out successfully!")),
-    );
-  }
-
-  void confirmPaymentMethod() {
-    if (selectedPaymentMethod == 'Select Payment Method') {
+  Future<void> logout() async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Sign out the user
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                const LoginScreen(), // Navigate to LoginScreen
+          ),
+        );
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please select a payment method!")),
+        const SnackBar(content: Text("Logged out successfully!")),
       );
-    } else {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text("Payment method confirmed: $selectedPaymentMethod")),
+        SnackBar(content: Text("Failed to log out: $e")),
       );
     }
   }
 
-  void selectPaymentMethod(String method) {
-    setState(() {
-      selectedPaymentMethod = method;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Access the theme provider
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     final isDarkMode = themeNotifier.isDarkMode;
+
+    // Get the current user's email
+    final email = FirebaseAuth.instance.currentUser?.email ?? 'No Email Found';
+    final name = email != 'No Email Found' ? email.split('@').first : 'User';
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
         backgroundColor:
-            isDarkMode ? Colors.black : Color.fromARGB(255, 0, 255, 166),
+            isDarkMode ? Colors.black : const Color.fromARGB(255, 0, 255, 166),
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -72,18 +71,26 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: isDarkMode ? Colors.white : Colors.black,
                 ),
                 title: Text(
-                  profileName,
+                  'Profile',
                   style: TextStyle(
                     color: isDarkMode ? Colors.white : Colors.black,
                   ),
                 ),
                 onTap: () {
-                  // Navigate to profile page (optional)
+                  // Navigate to ProfilePage with email and name
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        email: email,
+                        name: name,
+                      ),
+                    ),
+                  );
                 },
               ),
               const Divider(color: Colors.grey),
-
-              // About Us Section
+              // About Section
               ListTile(
                 leading: Icon(
                   Icons.info_outline,
@@ -97,13 +104,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   showModalBottomSheet<void>(
                     context: context,
                     builder: (BuildContext context) {
-                      return Infopage();
+                      return const Infopage();
                     },
                   );
                 },
               ),
               const Divider(color: Colors.grey),
-
               // Theme Change Section
               SwitchListTile(
                 title: Row(
@@ -112,7 +118,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       isDarkMode ? Icons.nightlight_round : Icons.sunny,
                       color: isDarkMode ? Colors.white : Colors.black,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
                       'Dark Mode',
                       style: TextStyle(
@@ -125,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onChanged: (value) {
                   themeNotifier.toggleTheme(value); // Update global theme
                 },
-                activeColor: Color.fromARGB(255, 0, 255, 166),
+                activeColor: const Color.fromARGB(255, 0, 255, 166),
                 inactiveTrackColor:
                     isDarkMode ? Colors.grey[600] : Colors.grey[300],
               ),
@@ -134,7 +140,7 @@ class _SettingsPageState extends State<SettingsPage> {
               // Logout Button
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: logout, // Perform the logout
+                onPressed: logout,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   minimumSize: const Size(double.infinity, 50),
@@ -145,10 +151,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: const Text(
                   'Logout',
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),

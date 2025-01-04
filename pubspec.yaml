@@ -44,8 +44,9 @@ dependencies:
   fl_chart: ^0.69.2
   hive:
   hive_flutter:
-  provider: ^6.1.2
-  url_launcher: ^6.3.1
+  provider:
+  url_launcher:
+  cloud_firestore:
 
 dev_dependencies:
   flutter_test:
