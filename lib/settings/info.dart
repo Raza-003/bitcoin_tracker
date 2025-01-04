@@ -34,21 +34,27 @@ class Infopage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.black : Colors.white;
+    final textColor = isDarkMode ? Colors.white : Colors.black;
+    // ignore: unused_local_variable
+    final dividerColor = isDarkMode ? Colors.grey[800] : Colors.grey[300];
+
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
-        color: Colors.white,
+        color: backgroundColor,
       ),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       width: double.infinity,
       height: 450,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Align(
             alignment: Alignment.center,
             child: Container(
@@ -57,12 +63,15 @@ class Infopage extends StatelessWidget {
               child: Image.asset("images/Cubosquare-logo.png"),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             "At Cubosquare, we specialize in transforming your ideas into reality. Whether you're looking for a SAAS, CRM, AI solution, web development, or mobile app, our expert team delivers tailored solutions to bring your vision to life. Like and share with your loved ones and let us help turn your dreams into innovation.",
-            style: TextStyle(fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: textColor,
+            ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -71,6 +80,7 @@ class Infopage extends StatelessWidget {
                 child: Image.asset(
                   "images/world-wide-web.png",
                   height: 35,
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
               GestureDetector(
@@ -100,16 +110,20 @@ class Infopage extends StatelessWidget {
                 child: Image.asset(
                   "images/phone-call.png",
                   height: 35,
+                  color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             "We greatly appreciate your support. You can donate to support our social initiatives and contribute to our mission. Your one review means a lot to us.",
-            style: TextStyle(fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: textColor,
+            ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -119,19 +133,26 @@ class Infopage extends StatelessWidget {
                   _openUrl(donateUrl);
                 },
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.amber),
+                  side: BorderSide(
+                    color: isDarkMode ? Colors.amber : Colors.green,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.monetization_on_outlined, color: Colors.amber),
-                    SizedBox(width: 5),
+                    Icon(
+                      Icons.monetization_on_outlined,
+                      color: isDarkMode ? Colors.amber : Colors.green,
+                    ),
+                    const SizedBox(width: 5),
                     Text(
                       "DONATE",
                       style: TextStyle(
-                          color: Colors.green, fontWeight: FontWeight.bold),
+                        color: isDarkMode ? Colors.amber : Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -142,19 +163,26 @@ class Infopage extends StatelessWidget {
                   _openUrl(donateUrl);
                 },
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.amber),
+                  side: BorderSide(
+                    color: isDarkMode ? Colors.amber : Colors.green,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.reviews_outlined, color: Colors.amber),
-                    SizedBox(width: 5),
+                    Icon(
+                      Icons.reviews_outlined,
+                      color: isDarkMode ? Colors.amber : Colors.green,
+                    ),
+                    const SizedBox(width: 5),
                     Text(
                       "REVIEW US",
                       style: TextStyle(
-                          color: Colors.green, fontWeight: FontWeight.bold),
+                        color: isDarkMode ? Colors.amber : Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -165,7 +193,7 @@ class Infopage extends StatelessWidget {
               //   ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
     );
