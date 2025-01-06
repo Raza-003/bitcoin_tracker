@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:185032335553:android:1f84827badbe605dda7440",
+        "mobilesdk_app_id": "1:185032335553:android:acc5b9e08f864f7cda7440",
         "android_client_info": {
-          "package_name": "com.trade"
+          "package_name": "com.bitcoinTracker.app"
         }
       },
       "oauth_client": [],

@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.trade</string>
+	<string>com.bitcoinTracker.app</string>
 	<key>PROJECT_ID</key>
 	<string>trade-b4c40</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:185032335553:ios:2ff132da595f7b02da7440</string>
+	<string>1:185032335553:ios:18f0e093904327abda7440</string>
 </dict>
 </plist>

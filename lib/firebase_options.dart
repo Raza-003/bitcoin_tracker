@@ -42,7 +42,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyC5NzaGfp0JglRjugWs_cNtCnTF1oMnLKc',
-    appId: '1:185032335553:web:8cfc30dfe2568031da7440',
+    appId: '1:185032335553:web:ded12c28ee007900da7440',
     messagingSenderId: '185032335553',
     projectId: 'trade-b4c40',
     authDomain: 'trade-b4c40.firebaseapp.com',
@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDXOoLj9Op4x3l6oepuU8KNqfft9a9p4r8',
-    appId: '1:185032335553:android:1f84827badbe605dda7440',
+    appId: '1:185032335553:android:acc5b9e08f864f7cda7440',
     messagingSenderId: '185032335553',
     projectId: 'trade-b4c40',
     storageBucket: 'trade-b4c40.firebasestorage.app',
@@ -59,28 +59,29 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCkRUCLmrKOtVKROh6Z6CIkD-I_GIe4meg',
-    appId: '1:185032335553:ios:2ff132da595f7b02da7440',
+    appId: '1:185032335553:ios:18f0e093904327abda7440',
     messagingSenderId: '185032335553',
     projectId: 'trade-b4c40',
     storageBucket: 'trade-b4c40.firebasestorage.app',
-    iosBundleId: 'com.trade',
+    iosBundleId: 'com.bitcoinTracker.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCkRUCLmrKOtVKROh6Z6CIkD-I_GIe4meg',
-    appId: '1:185032335553:ios:2ff132da595f7b02da7440',
+    appId: '1:185032335553:ios:18f0e093904327abda7440',
     messagingSenderId: '185032335553',
     projectId: 'trade-b4c40',
     storageBucket: 'trade-b4c40.firebasestorage.app',
-    iosBundleId: 'com.trade',
+    iosBundleId: 'com.bitcoinTracker.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyC5NzaGfp0JglRjugWs_cNtCnTF1oMnLKc',
-    appId: '1:185032335553:web:72092a4af8740784da7440',
+    appId: '1:185032335553:web:1473337b947fe989da7440',
     messagingSenderId: '185032335553',
     projectId: 'trade-b4c40',
     authDomain: 'trade-b4c40.firebaseapp.com',
     storageBucket: 'trade-b4c40.firebasestorage.app',
   );
+
 }

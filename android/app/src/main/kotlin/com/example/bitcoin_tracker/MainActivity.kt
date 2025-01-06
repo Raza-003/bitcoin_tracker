@@ -1,4 +1,4 @@
-package com.trade
+package com.bitcoinTracker.app
 
 import io.flutter.embedding.android.FlutterActivity
 
