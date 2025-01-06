@@ -94,6 +94,7 @@ class _SwapPageState extends State<SwapPage> {
         backgroundColor:
             isDarkMode ? Colors.black : Color.fromARGB(255, 0, 255, 166),
         elevation: 0,
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
           'Swap',

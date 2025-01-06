@@ -334,7 +334,7 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
-        centerTitle: true,
+        centerTitle: true,automaticallyImplyLeading: false,
         title: Text(
           'Currency Converter',
           style: TextStyle(

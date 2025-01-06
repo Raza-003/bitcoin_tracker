@@ -51,7 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor:
             isDarkMode ? Colors.black : const Color.fromARGB(255, 0, 255, 166),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: true,automaticallyImplyLeading: false,
         title: Text(
           'Settings',
           style: TextStyle(
