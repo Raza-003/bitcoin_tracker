@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Bitcoin Tracker',
       theme: themeNotifier.currentTheme, // Apply the current theme
-      home: Home(),
+      home: SplashScreen(),
     );
   }
 }
