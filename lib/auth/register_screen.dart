@@ -19,6 +19,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _isLoading = false;
 
+  // Custom error message mapping
+  String getCustomErrorMessage(String errorCode) {
+    switch (errorCode) {
+      case 'invalid-email':
+        return 'The email address is invalid.';
+      case 'email-already-in-use':
+        return 'This email address is already in use. Please use a different email.';
+      case 'weak-password':
+        return 'The password is too weak. Please use a stronger password.';
+      case 'operation-not-allowed':
+        return 'Email/password registration is disabled. Please contact support.';
+      case 'network-request-failed':
+        return 'Network error. Please check your connection and try again.';
+      default:
+        return 'An unexpected error occurred. Please try again.';
+    }
+  }
+
   // Register method using Firebase Authentication
   Future<void> _register() async {
     setState(() {
@@ -28,8 +46,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       // Firebase register
       await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
 
       // Navigate to Home screen
@@ -37,17 +55,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
         context,
         MaterialPageRoute(builder: (context) => Home()),
       );
-    } catch (e) {
-      // Show error message in Snackbar
+    } on FirebaseAuthException catch (e) {
+      // Show custom error message
+      String errorMessage = getCustomErrorMessage(e.code);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            e.toString(),
+            errorMessage,
             style: const TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.red,
         ),
       );
+    } catch (e) {
+      // Show generic error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'An unexpected error occurred. Please try again.',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
       setState(() {
         _isLoading = false;
       });
