@@ -24,14 +24,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
     switch (errorCode) {
       case 'invalid-email':
         return 'The email address is invalid.';
+      case 'user-disabled':
+        return 'This account has been disabled.';
+      case 'user-not-found':
+        return 'No account found with this email.';
+      case 'wrong-password':
+        return 'Incorrect password. Please try again.';
       case 'email-already-in-use':
         return 'This email address is already in use. Please use a different email.';
       case 'weak-password':
         return 'The password is too weak. Please use a stronger password.';
       case 'operation-not-allowed':
-        return 'Email/password registration is disabled. Please contact support.';
+        return 'Email/password sign-in is disabled. Please contact support.';
+      case 'too-many-requests':
+        return 'Too many login attempts. Please try again later.';
       case 'network-request-failed':
         return 'Network error. Please check your connection and try again.';
+      case 'account-exists-with-different-credential':
+        return 'An account already exists with the same email but different sign-in credentials.';
+      case 'invalid-credential':
+        return 'The provided credential is invalid or expired.';
+      case 'missing-email':
+        return 'Please provide an email address.';
+      case 'requires-recent-login':
+        return 'This operation requires recent authentication. Please log in again.';
+      case 'empty-fields':
+        return 'All fields are required. Please fill out all fields.';
       default:
         return 'An unexpected error occurred. Please try again.';
     }

@@ -47,6 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
         return 'Please provide an email address.';
       case 'requires-recent-login':
         return 'This operation requires recent authentication. Please log in again.';
+      case 'empty-fields':
+        return 'All fields are required. Please fill out all fields.';
       default:
         return 'An unexpected error occurred. Please try again.';
     }
